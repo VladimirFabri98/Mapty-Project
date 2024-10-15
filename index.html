@@ -24,6 +24,19 @@
   <div class="sidebar">
     <img src="logo.png" alt="Logo" class="logo" />
 
+    <div class="additional__options hidden">
+      <form class="sorting__form">
+        <label for="sortType" class="form__label">Sort by</label>
+        <select id="sortType" class="form__input form__input--sort">
+          <option value="" disabled selected hidden>Select sorting filter</option>
+          <option value="distance-asc">Distance (Ascending)</option>
+          <option value="distance-desc">Distance (Descending)</option>
+          <option value="duration-asc">Duration (Ascending)</option>
+          <option value="duration-desc">Duration (Descending)</option>
+        </select>
+      </form>
+      <button class="complete__delete--button">Delete all</button>
+    </div>
     <ul class="workouts">
       <form class="form hidden">
         <div class="form__row">
@@ -55,7 +68,7 @@
 
     <p class="copyright">
       &copy; Copyright by
-      <a class="twitter-link" target="_blank" href="https://twitter.com/jonasschmedtman">Vladimir Fabri</a>. This is an upgraded version of Jonas Schmedtmann's teaching project, I claim it only for portfolio purposes.
+      <a class="linkedin-link" target="_blank" href="https://www.linkedin.com/in/vladimir-fabri-7865a3198/">Vladimir Fabri</a>. This is an upgraded version of Jonas Schmedtmann's teaching project, I claim it only for portfolio purposes.
     </p>
   </div>
 

@@ -55,6 +55,32 @@ a:visited {
   margin-bottom: 4rem;
 }
 
+.additional__options{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+.additional__options.hidden{
+  display: none;
+}
+
+.sorting__form label{
+  display: flex;
+  justify-content: center;
+}
+
+.complete__delete--button{
+  flex-basis: 25%;
+  background: var(--color-dark--2);
+  border: none;
+  border-right: 5px solid red;
+  color: #fff;
+  font-weight: 500;
+  border-radius: 5px;
+  align-self: flex-end;
+  padding: 1rem;
+}
+
 .workouts {
   list-style: none;
   height: 77vh;
@@ -203,14 +229,14 @@ a:visited {
   color: var(--color-light--1);
 }
 
-.twitter-link:link,
-.twitter-link:visited {
+.linkedin-link:link,
+.linkedin-link:visited {
   color: var(--color-light--1);
   transition: all 0.2s;
 }
 
-.twitter-link:hover,
-.twitter-link:active {
+.linkedin-link:hover,
+.linkedin-link:active {
   color: var(--color-light--2);
 }
 

@@ -5,11 +5,17 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
+const additionalOptionsDiv = document.querySelector('.additional__options');
+
+const deleteAllButton = document.querySelector('.complete__delete--button');
+const inputSortType = document.querySelector('.form__input--sort');
+
 const inputType = document.querySelector('.form__input--type');
 const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+
 
 class Workout {
 
@@ -82,6 +88,9 @@ class App {
       inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
     })
     containerWorkouts.addEventListener('click', this._clickHandler.bind(this));
+    deleteAllButton.addEventListener('click', this._deleteAllWorkouts.bind(this));
+    inputSortType.addEventListener('change', this._sortWorkouts.bind(this));
+
   }
 
   _getPosition() {
@@ -139,6 +148,16 @@ class App {
     }, 1000);
   }
 
+  _showAdditionalOptionsForm(active){
+    if(this.#workouts.length > 0){
+      if(active)
+        additionalOptionsDiv.classList.remove('hidden');
+    }
+
+    if(!active)
+      additionalOptionsDiv.classList.add('hidden');
+  }
+
   _formProcessing(e) {
     e.preventDefault();
     !this.#editing ? this._newWorkout() : this._executeEdit(this.#workoutUnderEdit);
@@ -150,6 +169,7 @@ class App {
 
     if (!validInputs(distance, duration, cadenceOrElevation) || !allPositive(distance, duration, cadenceOrElevation)) {
       this.#validForm = false;
+      console.log(distance,duration,cadenceOrElevation);
       return alert('Inputs have to be a positive numbers');
     } else {
       this.#validForm = true;
@@ -186,6 +206,9 @@ class App {
 
     //Render workout on the list
     this._renderWorkout(workout);
+
+    //Show additional options
+    this._showAdditionalOptionsForm(true);
 
     //Set local storage to all workouts
     this._setLocalStorage();
@@ -266,6 +289,7 @@ class App {
 
     form.insertAdjacentHTML('afterend', html);
     this._hideform();
+    
   }
 
   _clickHandler(e) {
@@ -301,6 +325,7 @@ class App {
     this.#workouts.forEach(workout => {
       this._renderWorkout(workout);
     })
+    this._showAdditionalOptionsForm(true);
   }
 
   _initializeEdit(workout) {
@@ -311,8 +336,7 @@ class App {
     workoutsToBeHidden.forEach(element => {
       element.classList.toggle('hidden');
     });
-    console.log(`Input type before the method: ${inputType.value}`);
-    console.log(workout.type);
+    this._showAdditionalOptionsForm(false);
     this._setCorrectFormFields(workout.type);
     form.classList.remove('hidden');
 
@@ -360,6 +384,7 @@ class App {
       if (element.classList.contains('hidden')) element.classList.toggle('hidden');
     });
 
+    this._showAdditionalOptionsForm(true);
     this._hideform();
     this.#editing = false;
     this.#workoutUnderEdit = null;
@@ -374,6 +399,84 @@ class App {
     this.#workoutMarkers.delete(workout.id);
     this._findHTMLElementByDataID(workout).remove();
     this._setLocalStorage();
+
+    if(this.#workouts.length === 0){
+      this._showAdditionalOptionsForm(false);
+    }
+  }
+
+  _deleteAllWorkouts(){
+    // Clear workouts array
+    this.#workouts = [];
+
+    // Remove markers
+    this.#workoutMarkers.values().forEach(value => {
+      value.remove();
+    })
+
+    // Clear markers map
+    this.#workoutMarkers.clear();
+
+    // Get and remove all HTML workout elements
+    const htmlWorkouts = [...document.querySelectorAll('.workout')];
+    htmlWorkouts.forEach(element => {
+      element.remove();
+    })
+
+    // Hide form for sorting and deleting
+    this._showAdditionalOptionsForm(false);
+
+    // Set local storage to an empty #workout array
+    this._setLocalStorage();
+  }
+
+  _sortWorkouts(){
+    if(inputSortType.value === 'distance-asc'){
+      this.#workouts.sort((a,b)=>{
+        return a.distance- b.distance;
+        
+      })
+      // console.log(this.#workouts);
+    }
+
+    else if(inputSortType.value === 'distance-desc'){
+      this.#workouts.sort((a,b)=>{
+        return b.distance- a.distance;
+      });
+      // console.log(this.#workouts);
+    }
+
+    else if(inputSortType.value === 'duration-asc'){
+      this.#workouts.sort( (a,b) => {
+        return a.duration - b.duration;
+      });
+      // console.log(this.#workouts);
+    }
+
+    else if(inputSortType.value === 'duration-desc'){
+      this.#workouts.sort( (a,b) => {
+        return b.duration - a.duration;
+      });
+      // console.log(this.#workouts);
+    }
+
+    // workout HTML elements
+    const elements = [...document.querySelectorAll('.workout')];
+    const sortedElementsArr = [];
+    for(let i = 0; i < this.#workouts.length; i++){
+      for(let j = 0; j < elements.length; j ++){
+        if(elements.at(j).dataset.id === this.#workouts.at(i).id){
+          sortedElementsArr.push(elements.at(j));
+          break;
+        }
+      }
+    }
+    // console.log(sortedElementsArr);
+
+    sortedElementsArr.forEach(element => {
+      containerWorkouts.appendChild(element);
+    })
+    
   }
 
   _findHTMLElementByDataID(workout) {
